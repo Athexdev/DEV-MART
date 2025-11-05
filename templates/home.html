@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - ECommerce Store{% endblock %}
+
+{% block content %}
+<div class="hero-section" style="background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); color: white; padding: 80px 0; text-align: center; margin-bottom: 50px;">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Welcome to Our Store</h1>
+        <p class="lead mb-4">Discover amazing products at unbeatable prices</p>
+        <a href="{% url 'product_list' %}" class="btn btn-light btn-lg">Start Shopping</a>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="text-center mb-5 fw-bold">Featured Products</h2>
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100">
+                    {% if product.image %}
+                        <img src="https://frankfurt.apollo.olxcdn.com/v1/files/oe3fmtutdps12-BG/image;s=765x1020" class="card-img-top product-image" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="card-img-top product-image bg-light d-flex align-items-center justify-content-center">
+                            <span class="text-muted">No image</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted">{{ product.description|truncatewords:10 }}</p>
+                        <p class="price">${{ product.price }}</p>
+                        <div class="d-flex gap-2">
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-sm btn-info flex-grow-1">View</a>
+                            {% if product.stock > 0 %}
+                                <form method="post" action="{% url 'add_to_cart' product.id %}" class="flex-grow-1">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-sm btn-success w-100">Add to Cart</button>
+                                </form>
+                            {% else %}
+                                <button class="btn btn-sm btn-secondary w-100" disabled>Out of Stock</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-5">
+        <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">View All Products</a>
+    </div>
+</div>
+
+<div class="container my-5 py-5" style="background-color: #f8f9fa; border-radius: 10px;">
+    <div class="row text-center">
+        <div class="col-md-4 mb-3">
+            <h3>⚡ Fast Shipping</h3>
+            <p>Free shipping on orders over $500</p>
+        </div>
+        <div class="col-md-4 mb-3">
+            <h3>🔒 Secure Payment</h3>
+            <p>100% secure checkout with Google Pay</p>
+        </div>
+        <div class="col-md-4 mb-3">
+            <h3>✅ Quality Assured</h3>
+            <p>All products are verified and tested</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

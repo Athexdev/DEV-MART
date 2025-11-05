@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Confirmation - ECommerce Store{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h1 class="text-success mb-3">✓ Order Confirmed!</h1>
+                    <p class="lead mb-2">Thank you for your purchase</p>
+                    <p class="text-muted">Order #{{ order.id }}</p>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Order Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Order ID:</strong> #{{ order.id }}<br>
+                            <strong>Order Date:</strong> {{ order.created_at|date:"M d, Y - H:i" }}<br>
+                            <strong>Status:</strong> <span class="badge bg-info">{{ order.get_status_display }}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Payment Status:</strong> <span class="badge bg-success">{{ order.payment_status|upper }}</span><br>
+                            <strong>Payment Method:</strong> {{ order.payment_method|upper }}<br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Shipping Address</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        {{ order.first_name }} {{ order.last_name }}<br>
+                        {{ order.address }}<br>
+                        {{ order.city }}, {{ order.postal_code }}<br>
+                        {{ order.country }}<br>
+                        <strong>Phone:</strong> {{ order.phone }}<br>
+                        <strong>Email:</strong> {{ order.email }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Order Items</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                    <tr>
+                                        <td>{{ item.product.name }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>${{ item.price }}</td>
+                                        <td>${{ item.get_total }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 text-end">
+                            <strong>Subtotal:</strong> ${{ order.total_amount }}<br>
+                            <strong>Shipping:</strong> Free<br>
+                            <strong>Tax:</strong> $0.00<br>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-success">Total: ${{ order.total_amount }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-4">
+                <strong>What's Next?</strong><br>
+                You'll receive an email confirmation shortly. Track your order in your account dashboard.
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <a href="{% url 'home' %}" class="btn btn-primary">Continue Shopping</a>
+                <a href="{% url 'order_detail' order.id %}" class="btn btn-outline-primary">View Order</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
